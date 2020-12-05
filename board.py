@@ -33,7 +33,7 @@ class Board:
                 x = self.left + j * self.cell_size  # i = (x - self.left) / self.cell_size
                 y = self.top + i * self.cell_size   # j = (y - self.top) / self.cell_size
 
-                color = self.colors[self.board[i][j] % len(self.colors)]
+                color = self.colors[self.board[i][j]]
                 self.draw_styled_rect(surface, color, (x, y, self.cell_size, self.cell_size), border_width=1)
 
     def get_pos(self, x, y):
@@ -57,15 +57,29 @@ class Board:
         self.board[y][x] = not self.board[y][x]
 
     def next_color(self, x, y):
-        self.board[y][x] = self.board[y][x] + 1
+        self.board[y][x] = not self.board[y][x]
 
     def clicked_event(self, x, y):
-        pos = self.get_pos(x, y)
+        pass
 
-        self.debug_print(pos)
-        if pos is not None:
-            self.next_color(*pos)
+    def pressed_event(self, key):
+        pass
+
+    def scroll_event_up(self):
+        pass
+
+    def scroll_event_down(self):
+        pass
 
     def event_handler(self, event):
         if event.type == pygame.MOUSEBUTTONUP:
-            self.clicked_event(*event.pos)
+            if event.button == 4:
+                self.scroll_event_up()
+            if event.button == 5:
+                self.scroll_event_down()
+            else:
+                self.clicked_event(event.button, *event.pos)
+        if event.type == pygame.KEYDOWN:
+            self.pressed_event(event.key)
+        if event.type == pygame.USEREVENT + 1:
+            self.timer_exceed_event()

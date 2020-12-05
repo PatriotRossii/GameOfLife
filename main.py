@@ -1,11 +1,12 @@
 import pygame
-from board import Board
+from life import Life
 
 pygame.init()
-screen = pygame.display.set_mode((500, 500))
+screen = pygame.display.set_mode((1000, 1000))
 
-board = Board(5, 7)
+board = Life(100, 100)
 running = True
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
