@@ -2,9 +2,9 @@ import pygame
 from life import Life
 
 pygame.init()
-screen = pygame.display.set_mode((1000, 1000))
+screen = pygame.display.set_mode((200, 200))
 
-board = Life(100, 100)
+board = Life(5, 5)
 running = True
 
 while running:

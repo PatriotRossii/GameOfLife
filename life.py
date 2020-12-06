@@ -10,8 +10,13 @@ class Life(Board):
 
         self.started = False
 
+        self.to_retrospective = []
         self.my_event_type = pygame.USEREVENT + 1
         self.speed = 1000
+
+    def next_color(self, x, y):
+        super().next_color(x, y)
+        self.to_retrospective.append((x, y))
 
     def timer_exceed_event(self):
         self.next_move()
@@ -49,24 +54,29 @@ class Life(Board):
 
     def next_move(self):
         to_change = []
-        for y in range(self.height):
-            for x in range(self.width):
-                around = 0
-                for dy in range(-1, 2):
-                    for dx in range(-1, 2):
-                        if dx == 0 and dy == 0:
-                            continue
-                        cur_x = x + dx
-                        cur_y = y + dy
-                        if 0 <= cur_x < self.width and 0 <= cur_y < self.height:
-                            around += self.board[cur_y][cur_x]
+        buffer = []
 
-                if self.board[y][x] == 0:
-                    if around == 3:
-                        to_change.append((y, x, 1))
-                elif self.board[y][x] == 1:
-                    if around != 2 and around != 3:
-                        to_change.append((y, x, 0))
+        for ch_el in self.to_retrospective:
+            x, y = ch_el
+            around = 0
+            for dy in range(-1, 2):
+                for dx in range(-1, 2):
+                    if dx == 0 and dy == 0:
+                        continue
+                    cur_x = x + dx
+                    cur_y = y + dy
+                    if 0 <= cur_x < self.width and 0 <= cur_y < self.height:
+                        around += self.board[cur_y][cur_x]
+
+            if self.board[y][x] == 0:
+                if around == 3:
+                    buffer.append((x, y))
+                    to_change.append((y, x, 1))
+            elif self.board[y][x] == 1:
+                if around != 2 and around != 3:
+                    buffer.append((x, y))
+                    to_change.append((y, x, 0))
 
         for e in to_change:
             self.board[e[0]][e[1]] = e[2]
+        self.to_retrospective = buffer
